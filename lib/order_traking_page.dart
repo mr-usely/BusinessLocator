@@ -111,14 +111,6 @@ class OrderTrackingPageState extends State<OrderTrackingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text(
-          "Business Locator",
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.black, fontSize: 16),
-        ),
-      ),
       body: Stack(
         children: [
           currentLocation == null
