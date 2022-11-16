@@ -3,7 +3,7 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
    <application
-        android:label="google_mao"
+        android:label="Business Locator"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -33,7 +33,7 @@
             android:name="flutterEmbedding"
             android:value="2" />
              <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="AIzaSyCON60_OMUDsBYU6ZXiLEc7XNMaFIR-NDM"/>
+               android:value="AIzaSyAp8QZd2vS-sPIooFRbVx3xzQzRupqz4J8"/>
                
     </application>
 </manifest>

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
 
-const String google_api_key = "AIzaSyCON60_OMUDsBYU6ZXiLEc7XNMaFIR-NDM";
+const String google_api_key = "AIzaSyAp8QZd2vS-sPIooFRbVx3xzQzRupqz4J8";
 const Color primaryColor = Color(0xFF7B61FF);
 const double defaultPadding = 16.0;
