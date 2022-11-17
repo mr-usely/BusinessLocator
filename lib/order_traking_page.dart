@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:google_mao/components/GoogleMap.dart';
 import 'package:google_mao/constants.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -111,64 +112,48 @@ class OrderTrackingPageState extends State<OrderTrackingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          currentLocation == null
-              ? const Center(child: Text('Loading..'))
-              : GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                      target: LatLng(currentLocation!.latitude!,
-                          currentLocation!.longitude!),
-                      zoom: 13.5),
-                  polylines: {
-                    Polyline(
-                        polylineId: PolylineId("route"),
-                        points: polylineCoordinates,
-                        color: primaryColor,
-                        width: 6)
-                  },
-                  markers: {
-                    Marker(
-                        markerId: const MarkerId("currentLocation"),
-                        icon: currentLocationIcon,
-                        position: LatLng(currentLocation!.latitude!,
-                            currentLocation!.longitude!),
-                        infoWindow:
-                            InfoWindow(title: 'User', snippet: '22kms')),
-                    Marker(
-                        markerId: MarkerId("source"),
-                        icon: sourceIcon,
-                        position: currentLocation == null
-                            ? sourceLocation
-                            : LatLng(currentLocation!.latitude!,
-                                currentLocation!.longitude!)),
-                    Marker(
-                        markerId: MarkerId("destination"),
-                        icon: destinationIcon,
-                        position: destination)
-                  },
-                  onMapCreated: (mapController) {
-                    _controller.complete(mapController);
-                  },
+      body: currentLocation == null
+          ? const Center(child: Text('Loading..'))
+          : Column(
+              children: [
+                Container(
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        bottom: 0,
+                        child: GoogleMapComponent(
+                            current: currentLocation!,
+                            polyline: polylineCoordinates,
+                            currentIcon: currentLocationIcon,
+                            sourceIcon: sourceIcon,
+                            source: sourceLocation,
+                            destinationIcon: destinationIcon,
+                            destination: destination,
+                            controller: _controller),
+                      ),
+                      Positioned(
+                          bottom: 0,
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                    margin: EdgeInsets.all(13),
+                                    padding: EdgeInsets.all(13),
+                                    decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(15)),
+                                    child: Stack(
+                                      children: [Text('data')],
+                                    )),
+                              ),
+                            ],
+                          ))
+                    ],
+                  ),
                 ),
-          Positioned(
-              child: Row(
-            children: [
-              Expanded(
-                child: Container(
-                    margin: EdgeInsets.all(13),
-                    padding: EdgeInsets.all(13),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Stack(
-                      children: [Text('data')],
-                    )),
-              ),
-            ],
-          ))
-        ],
-      ),
+              ],
+            ),
     );
   }
 }
