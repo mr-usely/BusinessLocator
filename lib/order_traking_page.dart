@@ -33,7 +33,6 @@ class OrderTrackingPageState extends State<OrderTrackingPage> {
     location.getLocation().then((location) {
       setState(() {
         currentLocation = location;
-        print(currentLocation);
       });
     });
 
@@ -119,64 +118,77 @@ class OrderTrackingPageState extends State<OrderTrackingPage> {
           style: TextStyle(color: Colors.black, fontSize: 16),
         ),
       ),
-      body: Stack(
-        children: [
-          currentLocation == null
-              ? const Center(child: Text('Loading..'))
-              : GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                      target: LatLng(currentLocation!.latitude!,
-                          currentLocation!.longitude!),
-                      zoom: 13.5),
-                  polylines: {
-                    Polyline(
-                        polylineId: PolylineId("route"),
-                        points: polylineCoordinates,
-                        color: primaryColor,
-                        width: 6)
-                  },
-                  markers: {
-                    Marker(
-                        markerId: const MarkerId("currentLocation"),
-                        icon: currentLocationIcon,
-                        position: LatLng(currentLocation!.latitude!,
-                            currentLocation!.longitude!),
-                        infoWindow:
-                            InfoWindow(title: 'User', snippet: '22kms')),
-                    Marker(
-                        markerId: MarkerId("source"),
-                        icon: sourceIcon,
-                        position: currentLocation == null
-                            ? sourceLocation
-                            : LatLng(currentLocation!.latitude!,
-                                currentLocation!.longitude!)),
-                    Marker(
-                        markerId: MarkerId("destination"),
-                        icon: destinationIcon,
-                        position: destination)
-                  },
-                  onMapCreated: (mapController) {
-                    _controller.complete(mapController);
-                  },
-                ),
-          Positioned(
-              child: Row(
-            children: [
-              Expanded(
-                child: Container(
-                    margin: EdgeInsets.all(13),
-                    padding: EdgeInsets.all(13),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15)),
+      body: currentLocation == null
+          ? const Center(child: Text('Loading..'))
+          : Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
                     child: Stack(
-                      children: [Text('data')],
-                    )),
+                      children: <Widget>[
+                        Positioned(
+                            child: GoogleMap(
+                          initialCameraPosition: CameraPosition(
+                              target: LatLng(currentLocation!.latitude!,
+                                  currentLocation!.longitude!),
+                              zoom: 13.5),
+                          polylines: {
+                            Polyline(
+                                polylineId: PolylineId("route"),
+                                points: polylineCoordinates,
+                                color: primaryColor,
+                                width: 6)
+                          },
+                          markers: {
+                            Marker(
+                                markerId: const MarkerId("currentLocation"),
+                                icon: currentLocationIcon,
+                                position: LatLng(currentLocation!.latitude!,
+                                    currentLocation!.longitude!),
+                                infoWindow: InfoWindow(
+                                    title: 'User', snippet: '22kms')),
+                            Marker(
+                                markerId: MarkerId("source"),
+                                icon: sourceIcon,
+                                position: currentLocation == null
+                                    ? sourceLocation
+                                    : LatLng(currentLocation!.latitude!,
+                                        currentLocation!.longitude!)),
+                            Marker(
+                                markerId: MarkerId("destination"),
+                                icon: destinationIcon,
+                                position: destination)
+                          },
+                          onMapCreated: (mapController) {
+                            _controller.complete(mapController);
+                          },
+                        )),
+                        Positioned(
+                            bottom: 30,
+                            child: Container(
+                              height: 90,
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                        margin: EdgeInsets.all(13),
+                                        padding: EdgeInsets.all(13),
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(15)),
+                                        child: Text('data')),
+                                  ),
+                                ],
+                              ),
+                            ))
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ))
-        ],
-      ),
+            ),
     );
   }
 }

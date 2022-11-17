@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_mao/order_traking_page.dart';
+import 'package:google_mao/screens/Home/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -11,6 +13,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.dark,
+    ));
     return MaterialApp(
       title: 'Business Tracking Demo',
       debugShowCheckedModeBanner: false,
@@ -21,7 +27,7 @@ class MyApp extends StatelessWidget {
           elevation: 0,
         ),
       ),
-      home: const OrderTrackingPage(),
+      home: const HomeScreen(),
     );
   }
 }
