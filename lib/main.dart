@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       statusBarBrightness: Brightness.dark,
     ));
     return MaterialApp(
-      title: 'Business Tracking Demo',
+      title: 'Business Tracking',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,

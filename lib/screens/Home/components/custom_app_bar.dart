@@ -4,8 +4,8 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 class CustomAppBar extends StatelessWidget {
-  const CustomAppBar({super.key});
-
+  const CustomAppBar({super.key, required this.onTap});
+  final Function onTap;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -20,7 +20,7 @@ class CustomAppBar extends StatelessWidget {
             child: IconButton(
               padding: EdgeInsets.all(2),
               icon: Icon(CupertinoIcons.line_horizontal_3),
-              onPressed: () {},
+              onPressed: () => onTap(),
             )),
         Container(
             margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),

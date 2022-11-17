@@ -5,9 +5,11 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_mao/constants.dart';
 import 'package:google_mao/screens/Home/components/custom_app_bar.dart';
 import 'package:google_mao/screens/Home/components/custom_menu.dart';
+import 'package:google_mao/screens/Home/components/dashboard_detail.dart';
 import 'package:google_mao/screens/Home/components/google_map.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_mao/models/Businesses.dart';
+import 'package:google_mao/models/Menus.dart';
 import 'package:location/location.dart';
 
 class Body extends StatefulWidget {
@@ -26,6 +28,7 @@ class _BodyState extends State<Body> {
 
   List<LatLng> polylineCoordinates = [];
   LocationData? currentLocation;
+  bool isMenuOpened = false;
 
   BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor destinationIcon = BitmapDescriptor.defaultMarker;
@@ -103,6 +106,12 @@ class _BodyState extends State<Body> {
     print(name);
   }
 
+  void isOpenMenu() {
+    setState(() {
+      isMenuOpened = !isMenuOpened;
+    });
+  }
+
   void refreshIndicator() async {
     await Future.delayed(Duration(milliseconds: 3000));
     setState(() {
@@ -149,13 +158,42 @@ class _BodyState extends State<Body> {
                           destinationIcon: destinationIcon,
                           currentLocationIcon: currentLocationIcon,
                           controller: _controller),
-                      Positioned(top: 55, child: CustomAppBar()),
+                      Positioned(
+                          top: 55,
+                          child: CustomAppBar(
+                            onTap: () => isOpenMenu(),
+                          )),
+                      Positioned(
+                          top: 130,
+                          child: DashboardDetail(
+                            distance: 21,
+                            time: 40,
+                          )),
                       Positioned(
                           bottom: 30,
                           child: Menu(
                             itemList: itemList,
                             onPressed: (name) => onTapBusiness(name),
-                          ))
+                          )),
+                      isMenuOpened
+                          ? Positioned(
+                              top: 110,
+                              child: Container(
+                                width: 130,
+                                height: 50,
+                                margin: EdgeInsets.all(13),
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(15)),
+                                child: ListView.builder(
+                                    itemCount: menus.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return Text('${menus[index].name}');
+                                    }),
+                              ))
+                          : SizedBox(),
                     ]))
         ],
       ),

@@ -17,7 +17,7 @@ class ItemCards extends StatelessWidget {
           width: 130,
           margin: EdgeInsets.all(10),
           decoration: BoxDecoration(
-              color: kTextGreyColor, borderRadius: BorderRadius.circular(15)),
+              color: Colors.white, borderRadius: BorderRadius.circular(15)),
           child: Stack(
             children: [
               Positioned(

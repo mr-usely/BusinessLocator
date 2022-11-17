@@ -19,7 +19,8 @@ class Menu extends StatelessWidget {
         margin: EdgeInsets.symmetric(horizontal: 13),
         padding: EdgeInsets.only(left: 13, top: 20, bottom: 20),
         decoration: BoxDecoration(
-            color: Colors.white, borderRadius: BorderRadius.circular(15)),
+            color: Colors.white.withOpacity(0.8),
+            borderRadius: BorderRadius.circular(15)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
