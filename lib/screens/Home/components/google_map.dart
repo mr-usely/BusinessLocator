@@ -7,29 +7,31 @@ import 'package:location/location.dart';
 
 class GoogleMapComponent extends StatelessWidget {
   const GoogleMapComponent(
-      {Key? key,
-      required this.current,
+      {super.key,
+      required this.currentLoc,
+      required this.sourceLoc,
+      required this.destinationLoc,
       required this.polyline,
-      required this.currentIcon,
       required this.sourceIcon,
-      required this.source,
       required this.destinationIcon,
-      required this.destination,
-      required this.controller})
-      : super(key: key);
-  final LocationData current;
+      required this.currentLocationIcon,
+      required this.controller});
+  final LocationData currentLoc;
+  final LatLng sourceLoc;
+  final LatLng destinationLoc;
   final List<LatLng> polyline;
-  final LatLng source;
-  final LatLng destination;
-  final BitmapDescriptor currentIcon;
   final BitmapDescriptor sourceIcon;
   final BitmapDescriptor destinationIcon;
+  final BitmapDescriptor currentLocationIcon;
   final Completer<GoogleMapController> controller;
+
   @override
   Widget build(BuildContext context) {
     return GoogleMap(
+      zoomControlsEnabled: false,
       initialCameraPosition: CameraPosition(
-          target: LatLng(current.latitude!, current.longitude!), zoom: 13.5),
+          target: LatLng(currentLoc.latitude!, currentLoc.longitude!),
+          zoom: 13.5),
       polylines: {
         Polyline(
             polylineId: PolylineId("route"),
@@ -40,19 +42,19 @@ class GoogleMapComponent extends StatelessWidget {
       markers: {
         Marker(
             markerId: const MarkerId("currentLocation"),
-            icon: currentIcon,
-            position: LatLng(current.latitude!, current.longitude!),
+            icon: currentLocationIcon,
+            position: LatLng(currentLoc.latitude!, currentLoc.longitude!),
             infoWindow: InfoWindow(title: 'User', snippet: '22kms')),
         Marker(
             markerId: MarkerId("source"),
             icon: sourceIcon,
-            position: current == null
-                ? source
-                : LatLng(current.latitude!, current.longitude!)),
+            position: currentLoc == null
+                ? sourceLoc
+                : LatLng(currentLoc.latitude!, currentLoc.longitude!)),
         Marker(
             markerId: MarkerId("destination"),
             icon: destinationIcon,
-            position: destination)
+            position: destinationLoc)
       },
       onMapCreated: (mapController) {
         controller.complete(mapController);
