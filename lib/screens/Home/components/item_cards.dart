@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:google_mao/constants.dart';
+import 'package:google_mao/utils/constants.dart';
 import 'package:google_mao/models/Businesses.dart';
 
 class ItemCards extends StatelessWidget {
@@ -12,12 +12,22 @@ class ItemCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-        onTap: () => onPressed(business.name),
+        onTap: () {
+          onPressed(business.id, business.name, business.lat, business.lng);
+        },
         child: Container(
-          width: 130,
+          width: 115,
           margin: EdgeInsets.all(10),
           decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(15)),
+              border: business.isSelected
+                  ? Border.all(
+                      width: 2,
+                      style: BorderStyle.solid,
+                      color: primaryColor,
+                      strokeAlign: StrokeAlign.outside)
+                  : null,
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(15)),
           child: Stack(
             children: [
               Positioned(

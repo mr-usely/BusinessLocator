@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:google_mao/constants.dart';
+import 'package:google_mao/utils/constants.dart';
 
 class DashboardDetail extends StatelessWidget {
   const DashboardDetail(
-      {super.key, required this.distance, required this.time});
-  final int distance;
+      {super.key,
+      required this.distance,
+      required this.time,
+      required this.timeUnit});
+  final double distance;
   final int time;
+  final String timeUnit;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -33,9 +37,14 @@ class DashboardDetail extends StatelessWidget {
                   SizedBox(
                     height: 10,
                   ),
-                  Text('$time min',
-                      style:
-                          TextStyle(fontSize: 30, fontWeight: FontWeight.w700))
+                  Row(
+                    children: [
+                      Text('$time',
+                          style: TextStyle(
+                              fontSize: 30, fontWeight: FontWeight.w700)),
+                      Text(' $timeUnit', style: TextStyle(fontSize: 18)),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -80,9 +89,14 @@ class DashboardDetail extends StatelessWidget {
                   SizedBox(
                     height: 10,
                   ),
-                  Text('$distance km',
-                      style:
-                          TextStyle(fontSize: 30, fontWeight: FontWeight.w700))
+                  Row(
+                    children: [
+                      Text('$distance',
+                          style: TextStyle(
+                              fontSize: 30, fontWeight: FontWeight.w700)),
+                      Text(' km', style: TextStyle(fontSize: 18)),
+                    ],
+                  )
                 ],
               ),
             )

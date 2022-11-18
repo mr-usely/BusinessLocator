@@ -1,4 +1,9 @@
+import 'dart:convert';
 import 'dart:math' as Math;
+
+import 'package:dio/dio.dart';
+import 'package:google_mao/models/UnitMeasure.dart';
+import 'package:google_mao/utils/constants.dart';
 
 //HaverSine formula
 double getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
@@ -17,4 +22,23 @@ double getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
 
 double deg2rad(deg) {
   return deg * (Math.pi / 180);
+}
+
+// Get the estimated travel time and distance through google api
+Future<UnitMeasure> getTravelTime(lat1, lon1, lat2, lon2) async {
+  Dio dio = new Dio();
+  UnitMeasure unit;
+  Response response = await dio.get(
+      "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=$lat1,$lon1&destinations=$lat2, $lon2&key=$google_api_key");
+  String dataDistance =
+      response.data["rows"][0]["elements"][0]["distance"]["text"];
+  String dataDuration =
+      response.data["rows"][0]["elements"][0]["duration"]["text"];
+
+  double a = double.parse(dataDistance.split(" ")[0]);
+  double d = a * 1.60934;
+  List t = dataDuration.split(" ");
+  unit =
+      UnitMeasure(time: t[0], timeUnit: t[1], distance: d.toStringAsFixed(1));
+  return unit;
 }

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:google_mao/constants.dart';
+import 'package:google_mao/utils/constants.dart';
 import 'package:google_mao/models/Businesses.dart';
 import 'package:google_mao/screens/Home/components/item_cards.dart';
 
@@ -30,7 +30,7 @@ class Menu extends StatelessWidget {
               height: 20,
             ),
             Container(
-              height: 180,
+              height: 170,
               child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: itemList.length,

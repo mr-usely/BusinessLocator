@@ -2,11 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
-import 'package:google_mao/constants.dart';
+import 'package:google_mao/models/UnitMeasure.dart';
+import 'package:google_mao/utils/constants.dart';
 import 'package:google_mao/screens/Home/components/custom_app_bar.dart';
 import 'package:google_mao/screens/Home/components/custom_menu.dart';
 import 'package:google_mao/screens/Home/components/dashboard_detail.dart';
 import 'package:google_mao/screens/Home/components/google_map.dart';
+import 'package:google_mao/utils/utils.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_mao/models/Businesses.dart';
 import 'package:google_mao/models/Menus.dart';
@@ -20,11 +22,14 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  String selectedBusiness = "";
+  double distanceInKm = 0.0;
+  int travelDuration = 0;
+  String timeUnit = "sec";
   final Completer<GoogleMapController> _controller = Completer();
 
   static const LatLng sourceLocation = LatLng(37.33500926, -122.03272188);
-  static const LatLng destination =
-      LatLng(16.93614706510525, 121.76414004065758);
+  LatLng? destination;
 
   List<LatLng> polylineCoordinates = [];
   LocationData? currentLocation;
@@ -57,31 +62,25 @@ class _BodyState extends State<Body> {
     });
   }
 
-  void getPolyPoints() {
+  void getPolyPoints() async {
     PolylinePoints polylinePoints = PolylinePoints();
-    final streamController = StreamController<PolylinePoints>();
-    late StreamSubscription<PolylinePoints> subscription;
 
-    streamController.add(polylinePoints);
+    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+        google_api_key,
+        currentLocation == null
+            ? PointLatLng(sourceLocation.latitude, sourceLocation.longitude)
+            : PointLatLng(
+                currentLocation!.latitude!, currentLocation!.longitude!),
+        PointLatLng(destination!.latitude, destination!.longitude));
 
-    subscription = streamController.stream.listen((event) async {
-      PolylineResult result = await event.getRouteBetweenCoordinates(
-          google_api_key,
-          currentLocation == null
-              ? PointLatLng(sourceLocation.latitude, sourceLocation.longitude)
-              : PointLatLng(
-                  currentLocation!.latitude!, currentLocation!.longitude!),
-          PointLatLng(destination.latitude, destination.longitude));
-
-      if (result.points.isNotEmpty) {
-        setState(() {
-          result.points.forEach((PointLatLng point) =>
-              polylineCoordinates.add(LatLng(point.latitude, point.longitude)));
-        });
-      } else {
-        print('no polylines');
-      }
-    });
+    if (result.points.isNotEmpty) {
+      setState(() {
+        result.points.forEach((PointLatLng point) =>
+            polylineCoordinates.add(LatLng(point.latitude, point.longitude)));
+      });
+    } else {
+      print('no polylines');
+    }
   }
 
   void setCustomMarkerIcon() {
@@ -102,8 +101,35 @@ class _BodyState extends State<Body> {
     });
   }
 
-  void onTapBusiness(name) {
-    print(name);
+  void onTapBusiness(id, name, lat, lng) {
+    selectedBusiness = name;
+
+    polylineCoordinates.clear();
+
+    isSetSelected(id);
+
+    getTravelTime(
+            currentLocation!.latitude, currentLocation!.longitude, lat, lng)
+        .then((value) {
+      distanceInKm = double.parse(value.distance);
+      travelDuration = int.parse(value.time);
+      timeUnit = value.timeUnit;
+    });
+
+    setState(() {
+      destination = LatLng(lat, lng);
+      refreshIndicator();
+    });
+  }
+
+  void isSetSelected(id) {
+    for (var item in itemList) {
+      if (item.id == id) {
+        item.isSelected = true;
+      } else {
+        item.isSelected = false;
+      }
+    }
   }
 
   void isOpenMenu() {
@@ -123,6 +149,7 @@ class _BodyState extends State<Body> {
 
   @override
   void initState() {
+    destination = LatLng(16.93614706510525, 121.76414004065758);
     getCurrentLocation();
     setCustomMarkerIcon();
     getPolyPoints();
@@ -152,48 +179,59 @@ class _BodyState extends State<Body> {
                       GoogleMapComponent(
                           currentLoc: currentLocation!,
                           sourceLoc: sourceLocation,
-                          destinationLoc: destination,
+                          destinationLoc: destination!,
                           polyline: polylineCoordinates,
                           sourceIcon: sourceIcon,
                           destinationIcon: destinationIcon,
                           currentLocationIcon: currentLocationIcon,
                           controller: _controller),
                       Positioned(
-                          top: 55,
+                          top: 30,
                           child: CustomAppBar(
                             onTap: () => isOpenMenu(),
                           )),
                       Positioned(
-                          top: 130,
+                          top: 105,
                           child: DashboardDetail(
-                            distance: 21,
-                            time: 40,
-                          )),
+                              distance: distanceInKm,
+                              time: travelDuration,
+                              timeUnit: timeUnit)),
                       Positioned(
                           bottom: 30,
                           child: Menu(
                             itemList: itemList,
-                            onPressed: (name) => onTapBusiness(name),
+                            onPressed: (id, name, lat, lng) =>
+                                onTapBusiness(id, name, lat, lng),
                           )),
-                      isMenuOpened
-                          ? Positioned(
-                              top: 110,
-                              child: Container(
-                                width: 130,
-                                height: 50,
-                                margin: EdgeInsets.all(13),
-                                padding: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(15)),
-                                child: ListView.builder(
-                                    itemCount: menus.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Text('${menus[index].name}');
-                                    }),
-                              ))
-                          : SizedBox(),
+
+                      // Menus
+                      Positioned(
+                          top: 110,
+                          child: isMenuOpened
+                              ? Container(
+                                  width: 130,
+                                  height: 100,
+                                  margin: EdgeInsets.all(13),
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(15)),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text('${menus[0].name}'),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text('${menus[1].name}'),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : SizedBox()),
                     ]))
         ],
       ),

@@ -2,42 +2,47 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:google_mao/utils/constants.dart';
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({super.key, required this.onTap});
   final Function onTap;
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Container(
+        width: size.width * 0.93,
+        margin: EdgeInsets.all(13),
         child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        Container(
-            margin: EdgeInsets.all(13),
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(15)),
-            child: IconButton(
-              padding: EdgeInsets.all(2),
-              icon: Icon(CupertinoIcons.line_horizontal_3),
-              onPressed: () => onTap(),
-            )),
-        Container(
-            margin: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-            padding: EdgeInsets.symmetric(horizontal: 48, vertical: 15),
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(15)),
-            child: Text('Business Locator')),
-        Container(
-            margin: EdgeInsets.all(13),
-            decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(15)),
-            child: IconButton(
-              padding: EdgeInsets.all(2),
-              icon: Icon(CupertinoIcons.profile_circled),
-              onPressed: () {},
-            ))
-      ],
-    ));
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15)),
+                child: IconButton(
+                  padding: EdgeInsets.all(2),
+                  icon: Icon(CupertinoIcons.line_horizontal_3),
+                  color: primaryColor,
+                  onPressed: () => onTap(),
+                )),
+            Container(
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15)),
+                child: Text('Business Locator')),
+            Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(15)),
+                child: IconButton(
+                  padding: EdgeInsets.all(2),
+                  icon: Icon(CupertinoIcons.profile_circled),
+                  color: primaryColor,
+                  onPressed: () {},
+                ))
+          ],
+        ));
   }
 }
