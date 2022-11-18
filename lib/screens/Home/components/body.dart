@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_mao/models/UnitMeasure.dart';
+import 'package:google_mao/screens/Home/components/card_body.dart';
 import 'package:google_mao/utils/constants.dart';
 import 'package:google_mao/screens/Home/components/custom_app_bar.dart';
 import 'package:google_mao/screens/Home/components/custom_menu.dart';
@@ -26,6 +27,8 @@ class _BodyState extends State<Body> {
   double distanceInKm = 0.0;
   int travelDuration = 0;
   String timeUnit = "sec";
+  bool isSelectedItem = false;
+  bool isDockMenu = false;
   final Completer<GoogleMapController> _controller = Completer();
 
   static const LatLng sourceLocation = LatLng(37.33500926, -122.03272188);
@@ -77,6 +80,7 @@ class _BodyState extends State<Body> {
       setState(() {
         result.points.forEach((PointLatLng point) =>
             polylineCoordinates.add(LatLng(point.latitude, point.longitude)));
+        isSelectedItem = true;
       });
     } else {
       print('no polylines');
@@ -103,6 +107,7 @@ class _BodyState extends State<Body> {
 
   void onTapBusiness(id, name, lat, lng) {
     selectedBusiness = name;
+    isSelectedItem = false;
 
     polylineCoordinates.clear();
 
@@ -135,6 +140,7 @@ class _BodyState extends State<Body> {
   void isOpenMenu() {
     setState(() {
       isMenuOpened = !isMenuOpened;
+      isDockMenu = true;
     });
   }
 
@@ -149,7 +155,7 @@ class _BodyState extends State<Body> {
 
   @override
   void initState() {
-    destination = LatLng(16.93614706510525, 121.76414004065758);
+    destination = const LatLng(16.93614706510525, 121.76414004065758);
     getCurrentLocation();
     setCustomMarkerIcon();
     getPolyPoints();
@@ -159,6 +165,7 @@ class _BodyState extends State<Body> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Container(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -176,6 +183,7 @@ class _BodyState extends State<Body> {
                               CircularProgressIndicator(color: primaryColor)),
                     )
                   : Stack(children: [
+                      // Google Maps
                       GoogleMapComponent(
                           currentLoc: currentLocation!,
                           sourceLoc: sourceLocation,
@@ -185,28 +193,40 @@ class _BodyState extends State<Body> {
                           destinationIcon: destinationIcon,
                           currentLocationIcon: currentLocationIcon,
                           controller: _controller),
+
+                      // Load if polyline is on process
+                      !isSelectedItem
+                          ? Center(
+                              child: Container(
+                                  margin: const EdgeInsets.all(13),
+                                  padding: const EdgeInsets.all(13),
+                                  decoration: BoxDecoration(
+                                      color: const Color(0xFFE8E9EB)
+                                          .withOpacity(0.8),
+                                      borderRadius: BorderRadius.circular(15)),
+                                  child: const CircularProgressIndicator(
+                                      color: primaryColor)),
+                            )
+                          : const SizedBox(),
+
+                      // Custom App Bar
                       Positioned(
                           top: 30,
                           child: CustomAppBar(
                             onTap: () => isOpenMenu(),
                           )),
+
+                      // Dashboard
                       Positioned(
                           top: 105,
                           child: DashboardDetail(
                               distance: distanceInKm,
                               time: travelDuration,
                               timeUnit: timeUnit)),
-                      Positioned(
-                          bottom: 30,
-                          child: Menu(
-                            itemList: itemList,
-                            onPressed: (id, name, lat, lng) =>
-                                onTapBusiness(id, name, lat, lng),
-                          )),
 
-                      // Menus
+                      // Menus button
                       Positioned(
-                          top: 110,
+                          top: size.height * 0.1,
                           child: isMenuOpened
                               ? Container(
                                   width: 130,
@@ -232,6 +252,26 @@ class _BodyState extends State<Body> {
                                   ),
                                 )
                               : SizedBox()),
+
+                      // List of business
+                      Positioned(
+                          top: 218,
+                          child: CardBody(
+                            itemList: itemList,
+                          )),
+
+                      // List of nearest businesses
+                      Positioned(
+                          bottom: isDockMenu ? 10 : 30,
+                          child: Menu(
+                            resize: isDockMenu,
+                            onResized: () {
+                              isDockMenu = !isDockMenu;
+                            },
+                            itemList: itemList,
+                            onPressed: (id, name, lat, lng) =>
+                                onTapBusiness(id, name, lat, lng),
+                          )),
                     ]))
         ],
       ),

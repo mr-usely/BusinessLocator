@@ -5,6 +5,6 @@ class Menus {
 }
 
 List<Menus> menus = [
-  Menus(name: 'Home'),
-  Menus(name: 'About'),
+  Menus(name: 'Businesses'),
+  Menus(name: 'Favorites'),
 ];

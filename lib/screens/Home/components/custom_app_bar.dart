@@ -27,18 +27,19 @@ class CustomAppBar extends StatelessWidget {
                   onPressed: () => onTap(),
                 )),
             Container(
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15)),
-                child: Text('Business Locator')),
+                child: const Text('Business Locator')),
             Container(
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15)),
                 child: IconButton(
-                  padding: EdgeInsets.all(2),
-                  icon: Icon(CupertinoIcons.profile_circled),
+                  padding: const EdgeInsets.all(2),
+                  icon: const Icon(CupertinoIcons.profile_circled),
                   color: primaryColor,
                   onPressed: () {},
                 ))
