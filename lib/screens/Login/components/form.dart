@@ -30,7 +30,7 @@ class FormWidget extends StatelessWidget {
         height: 10,
       ),
       ButtonWidget(
-          width: 90,
+          width: size.width * 0.26,
           text: "Login",
           pressed: () => onSubmit(_email.text, _password.text)),
     ]);

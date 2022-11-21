@@ -45,13 +45,22 @@ class ItemCards extends StatelessWidget {
                         color: Colors.white,
                       )))),
               Positioned(
-                bottom: 15,
+                bottom: 3,
                 child: Container(
-                  height: 55,
+                  height: 65,
                   width: 130,
                   padding: EdgeInsets.all(10),
-                  child:
-                      Text("${business.name}", style: TextStyle(fontSize: 12)),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Flexible(
+                        child: Container(
+                          child: Text("${business.name}",
+                              style: TextStyle(fontSize: 12)),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],

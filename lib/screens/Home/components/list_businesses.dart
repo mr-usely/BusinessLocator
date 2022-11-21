@@ -26,8 +26,12 @@ class ListBusinesses extends StatelessWidget {
         GestureDetector(
           onTap: () =>
               onPressed(business.id, business.name, business.lat, business.lng),
-          onHorizontalDragEnd: (details) => onSlideRight(details),
-          onHorizontalDragStart: (details) => onSlideLeft(details),
+          onPanUpdate: (details) {
+            if (details.delta.dx > 0)
+              onSlideLeft();
+            else
+              onSlideRight();
+          },
           child: AnimatedContainer(
             margin: EdgeInsets.all(8),
             padding: EdgeInsets.all(13),

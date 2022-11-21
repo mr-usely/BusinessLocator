@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:google_mao/models/Businesses.dart';
 import 'package:google_mao/models/User.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
@@ -9,6 +10,10 @@ class Fun {
   static const server = "http://10.0.2.2:3000";
 
   static User? loggedUser;
+
+  static List<Businesses> businessList = [];
+
+  static List barangayList = [];
 
   static LocationData? currentLoc;
 
@@ -56,9 +61,32 @@ class Fun {
 
   // Get all nearby businesses
   static isGetNearbyBusinesses(lat, lng) async {
+    businessList.clear();
     http.Response res =
         await http.get(Uri.parse('$server/business/nearby/$lat/$lng'));
-    print(json.decode(res.body));
+    var data = json.decode(res.body);
+
+    for (var d in data) {
+      businessList.add(Businesses(
+          id: d["_id"],
+          name: d["name"],
+          address: d["address"],
+          barangay: d["barangay"],
+          lat: d["location"]["coordinates"][1],
+          lng: d["location"]["coordinates"][0],
+          classification: d["classification"]));
+    }
+  }
+
+  static isGetAllBrgys() async {
+    http.Response res = await http.get(Uri.parse('$server/business/all/brgys'));
+    var data = json.decode(res.body);
+
+    for (var d in data) {
+      barangayList.add(d["_id"]);
+    }
+
+    print(barangayList[0]);
   }
 
   // Global dialog

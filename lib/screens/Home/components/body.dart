@@ -8,6 +8,7 @@ import 'package:google_mao/models/ProfileMenus.dart';
 import 'package:google_mao/models/UnitMeasure.dart';
 import 'package:google_mao/models/menus.dart';
 import 'package:google_mao/screens/Home/components/card_body.dart';
+import 'package:google_mao/screens/Home/components/list_businesses.dart';
 import 'package:google_mao/screens/Home/components/menu_contianer.dart';
 import 'package:google_mao/screens/Home/components/profile_menu_container.dart';
 import 'package:google_mao/screens/Login/login_screen.dart';
@@ -40,6 +41,7 @@ class _BodyState extends State<Body> {
   bool isMenuOpened = false;
   bool isProfileMenuOpened = false;
   bool showFavoriteIcon = false;
+  Timer? timer;
   final Completer<GoogleMapController> _controller = Completer();
 
   static const LatLng sourceLocation = LatLng(37.33500926, -122.03272188);
@@ -209,8 +211,6 @@ class _BodyState extends State<Body> {
       getCurrentLocation();
       setCustomMarkerIcon();
       getPolyPoints();
-      Fun.isGetNearbyBusinesses(
-          Fun.currentLoc!.latitude, Fun.currentLoc!.longitude);
     });
   }
 
@@ -225,6 +225,11 @@ class _BodyState extends State<Body> {
       Fun.isGetNearbyBusinesses(
           Fun.currentLoc!.latitude, Fun.currentLoc!.longitude);
     }
+
+    timer = Timer.periodic(
+        Duration(seconds: 10),
+        (Timer timer) => Fun.isGetNearbyBusinesses(
+            currentLocation!.latitude, currentLocation!.longitude));
 
     super.initState();
   }
@@ -327,13 +332,34 @@ class _BodyState extends State<Body> {
                                   children: [
                                     CardBody(
                                       title: cardBodyTitle,
-                                      itemList: itemList,
-                                      favoriteIcon: showFavoriteIcon,
-                                      onPressed: (id, name, lat, lng) {
-                                        onTapBusiness(id, name, lat, lng);
-                                        isCardBody = false;
-                                      },
+                                      widget: Container(
+                                        height: size.height * 0.39,
+                                        margin: EdgeInsets.only(top: 10),
+                                        child: ListView.builder(
+                                            itemCount: itemList.length,
+                                            itemBuilder: (BuildContext context,
+                                                int index) {
+                                              return ListBusinesses(
+                                                  favoriteIcon:
+                                                      showFavoriteIcon,
+                                                  business: itemList[index],
+                                                  onPressed:
+                                                      (id, name, lat, lng) {
+                                                    onTapBusiness(
+                                                        id, name, lat, lng);
+                                                    isCardBody = false;
+                                                  },
+                                                  onSlideRight: () =>
+                                                      itemList[index]
+                                                          .isOnDelete = true,
+                                                  onSlideLeft: () =>
+                                                      itemList[index]
+                                                          .isOnDelete = false);
+                                            }),
+                                      ),
                                     ),
+
+                                    // Close Bar
                                     Positioned(
                                         left: size.width * 0.37,
                                         bottom: 20,
@@ -361,7 +387,7 @@ class _BodyState extends State<Body> {
                               isDockMenu = !isDockMenu;
                               isCardBody = false;
                             },
-                            itemList: itemList,
+                            itemList: Fun.businessList,
                             onPressed: (id, name, lat, lng) =>
                                 onTapBusiness(id, name, lat, lng),
                           )),
