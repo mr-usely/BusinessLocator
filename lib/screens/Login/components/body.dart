@@ -7,6 +7,7 @@ import 'package:google_mao/screens/Home/home_screen.dart';
 import 'package:google_mao/components/custom_card.dart';
 import 'package:google_mao/screens/Login/components/form.dart';
 import 'package:google_mao/utils/constants.dart';
+import 'package:location/location.dart';
 
 class Body extends StatefulWidget {
   const Body({super.key});
@@ -16,6 +17,15 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  void getCurrentLocation() {
+    Location location = Location();
+    location.getLocation().then((location) {
+      setState(() {
+        Fun.currentLoc = location;
+      });
+    });
+  }
+
   submit(email, password) async {
     if (email.isNotEmpty && password.isNotEmpty) {
       var request = await Fun.isUserLogin(email, password);
@@ -42,6 +52,7 @@ class _BodyState extends State<Body> {
   @override
   void initState() {
     // TODO: implement initState
+    getCurrentLocation();
     super.initState();
   }
 

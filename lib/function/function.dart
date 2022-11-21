@@ -3,11 +3,14 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_mao/models/User.dart';
 import 'package:http/http.dart' as http;
+import 'package:location/location.dart';
 
 class Fun {
   static const server = "http://10.0.2.2:3000";
 
   static User? loggedUser;
+
+  static LocationData? currentLoc;
 
   // create account
   static isCreateAccount(firstName, lastName, birthDay, email, password) async {
@@ -49,6 +52,13 @@ class Fun {
     } else {
       return User.fromJson(jsonDecode(res.body));
     }
+  }
+
+  // Get all nearby businesses
+  static isGetNearbyBusinesses(lat, lng) async {
+    http.Response res =
+        await http.get(Uri.parse('$server/business/nearby/$lat/$lng'));
+    print(json.decode(res.body));
   }
 
   // Global dialog

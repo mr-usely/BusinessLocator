@@ -209,6 +209,8 @@ class _BodyState extends State<Body> {
       getCurrentLocation();
       setCustomMarkerIcon();
       getPolyPoints();
+      Fun.isGetNearbyBusinesses(
+          Fun.currentLoc!.latitude, Fun.currentLoc!.longitude);
     });
   }
 
@@ -220,6 +222,8 @@ class _BodyState extends State<Body> {
       getCurrentLocation();
       setCustomMarkerIcon();
       getPolyPoints();
+      Fun.isGetNearbyBusinesses(
+          Fun.currentLoc!.latitude, Fun.currentLoc!.longitude);
     }
 
     super.initState();
