@@ -1,10 +1,12 @@
+import 'package:flutter/cupertino.dart';
+
 class Menus {
   String name;
-
-  Menus({required this.name});
+  IconData icon;
+  Menus({required this.name, required this.icon});
 }
 
 List<Menus> menus = [
-  Menus(name: 'Businesses'),
-  Menus(name: 'Favorites'),
+  Menus(name: 'Businesses', icon: CupertinoIcons.briefcase),
+  Menus(name: 'Favorites', icon: CupertinoIcons.heart),
 ];

@@ -3,6 +3,7 @@ class Businesses {
   String name, address, classification;
   double lat, lng;
   bool isSelected = false;
+  bool isOnDelete = false;
 
   Businesses(
       {required this.id,

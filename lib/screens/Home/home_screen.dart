@@ -8,8 +8,11 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Body(),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: Body(),
+      ),
     );
   }
 }

@@ -94,7 +94,7 @@ class DashboardDetail extends StatelessWidget {
                       Text('$distance',
                           style: TextStyle(
                               fontSize: 30, fontWeight: FontWeight.w700)),
-                      Text(' km', style: TextStyle(fontSize: 18)),
+                      Text(' kms', style: TextStyle(fontSize: 18)),
                     ],
                   )
                 ],

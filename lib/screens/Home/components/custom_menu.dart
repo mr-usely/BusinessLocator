@@ -11,28 +11,28 @@ class Menu extends StatelessWidget {
       {super.key,
       required this.itemList,
       required this.onPressed,
-      required this.resize,
-      required this.onResized});
+      required this.dockMenu,
+      required this.onDockMenu});
   final List<Businesses> itemList;
   final Function onPressed;
-  final Function onResized;
-  final bool resize;
+  final Function onDockMenu;
+  final bool dockMenu;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return AnimatedContainer(
-        height: resize ? size.height * 0.06 : size.height * 0.35,
+        height: dockMenu ? size.height * 0.06 : size.height * 0.35,
         width: size.width * 0.93,
         duration: const Duration(milliseconds: 500),
         margin: EdgeInsets.symmetric(horizontal: 13),
-        padding: resize ? EdgeInsets.zero : EdgeInsets.only(left: 13),
+        padding: dockMenu ? EdgeInsets.zero : EdgeInsets.only(left: 13),
         decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.8),
             borderRadius: BorderRadius.circular(15)),
-        child: resize
+        child: dockMenu
             ? IconButton(
                 padding: EdgeInsets.zero,
-                onPressed: () => onResized(),
+                onPressed: () => onDockMenu(),
                 icon: Icon(
                   CupertinoIcons.chevron_compact_up,
                   size: 50,
@@ -44,7 +44,7 @@ class Menu extends StatelessWidget {
                     left: size.width * 0.37,
                     child: IconButton(
                         padding: EdgeInsets.zero,
-                        onPressed: () => onResized(),
+                        onPressed: () => onDockMenu(),
                         icon: Icon(
                           CupertinoIcons.chevron_compact_down,
                           size: 50,

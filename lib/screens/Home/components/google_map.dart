@@ -15,7 +15,9 @@ class GoogleMapComponent extends StatelessWidget {
       required this.sourceIcon,
       required this.destinationIcon,
       required this.currentLocationIcon,
-      required this.controller});
+      required this.controller,
+      required this.distance,
+      required this.user});
   final LocationData currentLoc;
   final LatLng sourceLoc;
   final LatLng destinationLoc;
@@ -24,6 +26,8 @@ class GoogleMapComponent extends StatelessWidget {
   final BitmapDescriptor destinationIcon;
   final BitmapDescriptor currentLocationIcon;
   final Completer<GoogleMapController> controller;
+  final double distance;
+  final String user;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +48,7 @@ class GoogleMapComponent extends StatelessWidget {
             markerId: const MarkerId("currentLocation"),
             icon: currentLocationIcon,
             position: LatLng(currentLoc.latitude!, currentLoc.longitude!),
-            infoWindow: InfoWindow(title: 'User', snippet: '22kms')),
+            infoWindow: InfoWindow(title: '$user', snippet: '$distance kms')),
         Marker(
             markerId: MarkerId("source"),
             icon: sourceIcon,

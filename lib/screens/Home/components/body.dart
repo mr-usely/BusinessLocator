@@ -1,9 +1,16 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
+import 'package:google_mao/function/function.dart';
+import 'package:google_mao/models/ProfileMenus.dart';
 import 'package:google_mao/models/UnitMeasure.dart';
+import 'package:google_mao/models/menus.dart';
 import 'package:google_mao/screens/Home/components/card_body.dart';
+import 'package:google_mao/screens/Home/components/menu_contianer.dart';
+import 'package:google_mao/screens/Home/components/profile_menu_container.dart';
+import 'package:google_mao/screens/Login/login_screen.dart';
 import 'package:google_mao/utils/constants.dart';
 import 'package:google_mao/screens/Home/components/custom_app_bar.dart';
 import 'package:google_mao/screens/Home/components/custom_menu.dart';
@@ -12,7 +19,6 @@ import 'package:google_mao/screens/Home/components/google_map.dart';
 import 'package:google_mao/utils/utils.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_mao/models/Businesses.dart';
-import 'package:google_mao/models/Menus.dart';
 import 'package:location/location.dart';
 
 class Body extends StatefulWidget {
@@ -27,8 +33,13 @@ class _BodyState extends State<Body> {
   double distanceInKm = 0.0;
   int travelDuration = 0;
   String timeUnit = "sec";
-  bool isSelectedItem = false;
+  bool isLoadPolyline = false;
   bool isDockMenu = false;
+  bool isCardBody = false;
+  String cardBodyTitle = "";
+  bool isMenuOpened = false;
+  bool isProfileMenuOpened = false;
+  bool showFavoriteIcon = false;
   final Completer<GoogleMapController> _controller = Completer();
 
   static const LatLng sourceLocation = LatLng(37.33500926, -122.03272188);
@@ -36,54 +47,64 @@ class _BodyState extends State<Body> {
 
   List<LatLng> polylineCoordinates = [];
   LocationData? currentLocation;
-  bool isMenuOpened = false;
 
   BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor destinationIcon = BitmapDescriptor.defaultMarker;
   BitmapDescriptor currentLocationIcon = BitmapDescriptor.defaultMarker;
 
   void getCurrentLocation() async {
-    Location location = Location();
+    try {
+      Location location = Location();
+      if (!mounted) return;
 
-    location.getLocation().then((location) {
-      setState(() {
-        currentLocation = location;
+      location.getLocation().then((location) {
+        setState(() {
+          currentLocation = location;
+        });
       });
-    });
 
-    GoogleMapController googleMapController = await _controller.future;
+      GoogleMapController googleMapController = await _controller.future;
 
-    location.onLocationChanged.listen((newLoc) {
-      setState(() {
-        currentLocation = newLoc;
+      location.onLocationChanged.listen((newLoc) {
+        setState(() {
+          currentLocation = newLoc;
 
-        googleMapController.animateCamera(CameraUpdate.newCameraPosition(
-            CameraPosition(
-                zoom: 13.5,
-                target: LatLng(newLoc.latitude!, newLoc.longitude!))));
+          googleMapController.animateCamera(CameraUpdate.newCameraPosition(
+              CameraPosition(
+                  zoom: 13.5,
+                  target: LatLng(newLoc.latitude!, newLoc.longitude!))));
+        });
       });
-    });
+    } catch (e) {
+      print(e);
+    }
   }
 
   void getPolyPoints() async {
-    PolylinePoints polylinePoints = PolylinePoints();
+    try {
+      PolylinePoints polylinePoints = PolylinePoints();
+      if (!mounted) return;
 
-    PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-        google_api_key,
-        currentLocation == null
-            ? PointLatLng(sourceLocation.latitude, sourceLocation.longitude)
-            : PointLatLng(
-                currentLocation!.latitude!, currentLocation!.longitude!),
-        PointLatLng(destination!.latitude, destination!.longitude));
+      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+          google_api_key,
+          currentLocation == null
+              ? PointLatLng(sourceLocation.latitude, sourceLocation.longitude)
+              : PointLatLng(
+                  currentLocation!.latitude!, currentLocation!.longitude!),
+          PointLatLng(destination!.latitude, destination!.longitude));
 
-    if (result.points.isNotEmpty) {
-      setState(() {
-        result.points.forEach((PointLatLng point) =>
-            polylineCoordinates.add(LatLng(point.latitude, point.longitude)));
-        isSelectedItem = true;
-      });
-    } else {
-      print('no polylines');
+      if (result.points.isNotEmpty && mounted) {
+        setState(() {
+          result.points.forEach((PointLatLng point) =>
+              polylineCoordinates.add(LatLng(point.latitude, point.longitude)));
+          isLoadPolyline = true;
+        });
+      } else {
+        print('no polylines');
+        isLoadPolyline = true;
+      }
+    } catch (e) {
+      print(e);
     }
   }
 
@@ -107,11 +128,13 @@ class _BodyState extends State<Body> {
 
   void onTapBusiness(id, name, lat, lng) {
     selectedBusiness = name;
-    isSelectedItem = false;
+    isLoadPolyline = false;
 
     polylineCoordinates.clear();
 
     isSetSelected(id);
+
+    isOnDelete(id);
 
     getTravelTime(
             currentLocation!.latitude, currentLocation!.longitude, lat, lng)
@@ -137,15 +160,51 @@ class _BodyState extends State<Body> {
     }
   }
 
-  void isOpenMenu() {
-    setState(() {
-      isMenuOpened = !isMenuOpened;
-      isDockMenu = true;
-    });
+  void isOnDelete(id) {
+    for (var item in itemList) {
+      if (item.id == id) {
+        item.isOnDelete = true;
+      } else {
+        item.isSelected = false;
+      }
+    }
   }
 
-  void refreshIndicator() async {
-    await Future.delayed(Duration(milliseconds: 3000));
+  void isOpenMenu() {
+    isMenuOpened = !isMenuOpened;
+  }
+
+  void isMenu(menu) {
+    if (menu == "Businesses") {
+      isCardBody = true;
+      isDockMenu = true;
+      isMenuOpened = false;
+      showFavoriteIcon = false;
+      cardBodyTitle = "List of Businesses";
+    } else if (menu == "Favorites") {
+      isCardBody = true;
+      isDockMenu = true;
+      isMenuOpened = false;
+      showFavoriteIcon = true;
+      cardBodyTitle = "Favorites";
+    }
+  }
+
+  void isOpenProfileMenu() {
+    isProfileMenuOpened = !isProfileMenuOpened;
+  }
+
+  void profileMenu(menu) {
+    if (menu == "Profile") {
+      isProfileMenuOpened = false;
+    } else if (menu == "Logout") {
+      Fun.loggedUser = null;
+      Navigator.push(context,
+          MaterialPageRoute(builder: ((context) => const LoginScreen())));
+    }
+  }
+
+  void refreshIndicator() {
     setState(() {
       getCurrentLocation();
       setCustomMarkerIcon();
@@ -156,11 +215,20 @@ class _BodyState extends State<Body> {
   @override
   void initState() {
     destination = const LatLng(16.93614706510525, 121.76414004065758);
-    getCurrentLocation();
-    setCustomMarkerIcon();
-    getPolyPoints();
-    refreshIndicator();
+
+    if (mounted) {
+      getCurrentLocation();
+      setCustomMarkerIcon();
+      getPolyPoints();
+    }
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
@@ -185,6 +253,10 @@ class _BodyState extends State<Body> {
                   : Stack(children: [
                       // Google Maps
                       GoogleMapComponent(
+                          distance: distanceInKm,
+                          user: Fun.loggedUser == null
+                              ? 'Invalid User'
+                              : Fun.loggedUser!.firstName!,
                           currentLoc: currentLocation!,
                           sourceLoc: sourceLocation,
                           destinationLoc: destination!,
@@ -195,7 +267,7 @@ class _BodyState extends State<Body> {
                           controller: _controller),
 
                       // Load if polyline is on process
-                      !isSelectedItem
+                      !isLoadPolyline
                           ? Center(
                               child: Container(
                                   margin: const EdgeInsets.all(13),
@@ -213,8 +285,8 @@ class _BodyState extends State<Body> {
                       Positioned(
                           top: 30,
                           child: CustomAppBar(
-                            onTap: () => isOpenMenu(),
-                          )),
+                              onTapMenu: () => isOpenMenu(),
+                              onTapProfileMenu: () => isOpenProfileMenu())),
 
                       // Dashboard
                       Positioned(
@@ -226,47 +298,64 @@ class _BodyState extends State<Body> {
 
                       // Menus button
                       Positioned(
-                          top: size.height * 0.1,
+                          top: size.height * 0.12,
                           child: isMenuOpened
-                              ? Container(
-                                  width: 130,
-                                  height: 100,
-                                  margin: EdgeInsets.all(13),
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(15)),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text('${menus[0].name}'),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text('${menus[1].name}'),
-                                      ),
-                                    ],
-                                  ),
-                                )
+                              ? MenuContainer(
+                                  onPressed: (menu) => isMenu(menu),
+                                  menusList: menus)
+                              : SizedBox()),
+
+                      // Profile Menus button
+                      Positioned(
+                          top: size.height * 0.12,
+                          right: 0,
+                          child: isProfileMenuOpened
+                              ? ProfileMenuContainer(
+                                  onPressed: (menu) => profileMenu(menu),
+                                  menusList: profileMenus)
                               : SizedBox()),
 
                       // List of business
                       Positioned(
                           top: 218,
-                          child: CardBody(
-                            itemList: itemList,
-                          )),
+                          child: isCardBody
+                              ? Stack(
+                                  children: [
+                                    CardBody(
+                                      title: cardBodyTitle,
+                                      itemList: itemList,
+                                      favoriteIcon: showFavoriteIcon,
+                                      onPressed: (id, name, lat, lng) {
+                                        onTapBusiness(id, name, lat, lng);
+                                        isCardBody = false;
+                                      },
+                                    ),
+                                    Positioned(
+                                        left: size.width * 0.37,
+                                        bottom: 20,
+                                        child: GestureDetector(
+                                          onTap: () => isCardBody = false,
+                                          child: Container(
+                                            width: size.width * 0.25,
+                                            height: 3,
+                                            decoration: BoxDecoration(
+                                                color: primaryColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                          ),
+                                        ))
+                                  ],
+                                )
+                              : SizedBox()),
 
                       // List of nearest businesses
                       Positioned(
                           bottom: isDockMenu ? 10 : 30,
                           child: Menu(
-                            resize: isDockMenu,
-                            onResized: () {
+                            dockMenu: isDockMenu,
+                            onDockMenu: () {
                               isDockMenu = !isDockMenu;
+                              isCardBody = false;
                             },
                             itemList: itemList,
                             onPressed: (id, name, lat, lng) =>

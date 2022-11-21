@@ -5,8 +5,10 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:google_mao/utils/constants.dart';
 
 class CustomAppBar extends StatelessWidget {
-  const CustomAppBar({super.key, required this.onTap});
-  final Function onTap;
+  const CustomAppBar(
+      {super.key, required this.onTapMenu, required this.onTapProfileMenu});
+  final Function onTapMenu;
+  final Function onTapProfileMenu;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -24,7 +26,7 @@ class CustomAppBar extends StatelessWidget {
                   padding: EdgeInsets.all(2),
                   icon: Icon(CupertinoIcons.line_horizontal_3),
                   color: primaryColor,
-                  onPressed: () => onTap(),
+                  onPressed: () => onTapMenu(),
                 )),
             Container(
                 padding:
@@ -41,7 +43,7 @@ class CustomAppBar extends StatelessWidget {
                   padding: const EdgeInsets.all(2),
                   icon: const Icon(CupertinoIcons.profile_circled),
                   color: primaryColor,
-                  onPressed: () {},
+                  onPressed: () => onTapProfileMenu(),
                 ))
           ],
         ));
