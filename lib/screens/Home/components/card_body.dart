@@ -1,9 +1,15 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CardBody extends StatelessWidget {
-  const CardBody({super.key, required this.title, required this.widget});
+  const CardBody(
+      {super.key,
+      required this.title,
+      required this.widget,
+      required this.onPressedBack});
   final String title;
   final Widget widget;
+  final Function onPressedBack;
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -16,10 +22,23 @@ class CardBody extends StatelessWidget {
           color: Colors.white.withOpacity(0.8),
           borderRadius: BorderRadius.circular(15)),
       child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-        Text(
-          title,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            (title != "Barangays" && title != "Favorites")
+                ? IconButton(
+                    onPressed: () => onPressedBack(),
+                    icon: Icon(CupertinoIcons.arrow_left))
+                : SizedBox(width: 50),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+            ),
+            SizedBox(
+              width: 50,
+            )
+          ],
         ),
         widget
       ]),

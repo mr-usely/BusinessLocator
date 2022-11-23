@@ -59,7 +59,7 @@ class FormWidget extends StatelessWidget {
         height: 10,
       ),
       ButtonWidget(
-          width: 70,
+          width: size.width * 0.17,
           text: "Create Account",
           pressed: () => onSubmit(_firstName.text, _lastName.text,
               _birthDay.text, _email.text, _password.text)),

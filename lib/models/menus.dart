@@ -7,6 +7,7 @@ class Menus {
 }
 
 List<Menus> menus = [
-  Menus(name: 'Businesses', icon: CupertinoIcons.briefcase),
+  Menus(name: 'Search', icon: CupertinoIcons.search),
+  Menus(name: 'Barangays', icon: CupertinoIcons.placemark),
   Menus(name: 'Favorites', icon: CupertinoIcons.heart),
 ];

@@ -12,7 +12,7 @@ class MenuContainer extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return Container(
       width: size.width * 0.348,
-      height: 85,
+      height: 116,
       margin: EdgeInsets.all(13),
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(

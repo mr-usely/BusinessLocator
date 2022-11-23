@@ -54,6 +54,7 @@ class _BodyState extends State<Body> {
     // TODO: implement initState
     getCurrentLocation();
     Fun.isGetAllBrgys();
+    Fun.loadAllBusinesses();
     super.initState();
   }
 

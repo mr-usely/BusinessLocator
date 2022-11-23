@@ -7,11 +7,21 @@ import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
 
 class Fun {
-  static const server = "http://10.0.2.2:3000";
+  static const isDevelopment = false;
+
+  static const server = isDevelopment
+      ? "http://10.0.2.2:3000"
+      : "https://business-locator-api.onrender.com";
 
   static User? loggedUser;
 
   static List<Businesses> businessList = [];
+
+  static List<Businesses> itemListBusinesses = [];
+
+  static List<Businesses> itemFavorites = [];
+
+  static List<Businesses> searchedItems = [];
 
   static List barangayList = [];
 
@@ -61,13 +71,120 @@ class Fun {
 
   // Get all nearby businesses
   static isGetNearbyBusinesses(lat, lng) async {
-    businessList.clear();
+    try {
+      http.Response res =
+          await http.get(Uri.parse('$server/business/nearby/$lat/$lng'));
+      var data = json.decode(res.body);
+
+      businessList.clear();
+
+      for (var d in data) {
+        businessList.add(Businesses(
+            id: d["_id"],
+            name: d["name"],
+            address: d["address"],
+            barangay: d["barangay"],
+            lat: d["location"]["coordinates"][1],
+            lng: d["location"]["coordinates"][0],
+            classification: d["classification"]));
+      }
+    } catch (_ClientSocketException) {
+      print("error");
+    }
+  }
+
+// Get all barangays
+  static isGetAllBrgys() async {
+    try {
+      http.Response res =
+          await http.get(Uri.parse('$server/business/all/brgys'));
+      var data = json.decode(res.body);
+
+      barangayList.clear();
+
+      for (var d in data) {
+        barangayList.add(d["_id"]);
+      }
+    } catch (_ClientSocketException) {
+      print("error");
+    }
+  }
+
+// load all businesses
+  static loadAllBusinesses() async {
+    try {
+      http.Response res = await http.get(Uri.parse("$server/business"));
+      var data = jsonDecode(res.body);
+
+      itemListBusinesses.clear();
+      for (var d in data) {
+        itemListBusinesses.add(Businesses(
+            id: d["_id"],
+            name: d["name"],
+            address: d["address"],
+            barangay: d["barangay"],
+            lat: d["location"]["coordinates"][1],
+            lng: d["location"]["coordinates"][0],
+            classification: d["classification"]));
+      }
+    } catch (_ClientSocketException) {
+      print("error");
+    }
+  }
+
+  // load all favorites
+  static loadAllFavorites(userId) async {
+    try {
+      http.Response res = await http.get(Uri.parse("$server/favorite/$userId"));
+      var data = jsonDecode(res.body);
+
+      itemFavorites.clear();
+
+      for (var d in data) {
+        itemFavorites.add(Businesses(
+            id: d["_id"],
+            name: d["name"],
+            address: d["address"],
+            barangay: d["barangay"],
+            lat: d["location"]["coordinates"][1],
+            lng: d["location"]["coordinates"][0],
+            classification: d["classification"]));
+      }
+    } catch (_ClientSocketException) {
+      print("error");
+    }
+  }
+
+  // add favorites
+  static addFavorites(userId, businessId) async {
+    var body = jsonEncode({"userId": userId, "businessId": businessId});
+    var res = await http.post(Uri.parse("$server/favorite/add"),
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        body: body);
+    var getData = jsonDecode(res.body);
+
+    if (getData["type"] == "error") {
+      return null;
+    } else if (getData["type"] == "existing") {
+      return "added";
+    } else {
+      return "added";
+    }
+  }
+
+  // search Item
+  static isSearchItem(item) async {
     http.Response res =
-        await http.get(Uri.parse('$server/business/nearby/$lat/$lng'));
-    var data = json.decode(res.body);
+        await http.get(Uri.parse("$server/business/find/$item"));
+    var data = jsonDecode(res.body);
+
+    searchedItems.clear();
 
     for (var d in data) {
-      businessList.add(Businesses(
+      searchedItems.add(Businesses(
           id: d["_id"],
           name: d["name"],
           address: d["address"],
@@ -78,15 +195,29 @@ class Fun {
     }
   }
 
-  static isGetAllBrgys() async {
-    http.Response res = await http.get(Uri.parse('$server/business/all/brgys'));
+  // filter business by barangay
+  static List<Businesses> filterBusinesses(barangay) {
+    List<Businesses> businessList = [];
+    List<Businesses> filteredBusiness =
+        itemListBusinesses.where((e) => (e.barangay == barangay)).toList();
+
+    businessList = filteredBusiness;
+
+    return businessList;
+  }
+
+// update current address
+  static updateAddress(userId, address) async {
+    var body = jsonEncode({"address": address});
+    var res = await http.patch(Uri.parse('$server/user/update/$userId'),
+        headers: {
+          "Accept": "application/json",
+          "Content-type": "application/json"
+        },
+        body: body);
+
     var data = json.decode(res.body);
-
-    for (var d in data) {
-      barangayList.add(d["_id"]);
-    }
-
-    print(barangayList[0]);
+    return data['type'];
   }
 
   // Global dialog

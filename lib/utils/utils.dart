@@ -42,3 +42,12 @@ Future<UnitMeasure> getTravelTime(lat1, lon1, lat2, lon2) async {
       UnitMeasure(time: t[0], timeUnit: t[1], distance: d.toStringAsFixed(1));
   return unit;
 }
+
+Future<dynamic> getCurrentlocationAddress(lat, lon) async {
+  Dio dio = new Dio();
+  UnitMeasure unit;
+  Response response = await dio.get(
+      "https://maps.google.com/maps/api/geocode/json?key=$google_api_key&language=en&latlng=$lat, $lon");
+
+  return response.data["results"][0]["formatted_address"];
+}

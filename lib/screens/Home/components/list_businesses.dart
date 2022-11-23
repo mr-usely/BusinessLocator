@@ -12,12 +12,14 @@ class ListBusinesses extends StatelessWidget {
       required this.business,
       required this.favoriteIcon,
       required this.onSlideRight,
-      required this.onSlideLeft});
+      required this.onSlideLeft,
+      required this.addFavorite});
   final Function onPressed;
   final Businesses business;
   final bool favoriteIcon;
   final Function onSlideRight;
   final Function onSlideLeft;
+  final Function addFavorite;
   static bool showIcon = false;
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,7 @@ class ListBusinesses extends StatelessWidget {
             else
               onSlideRight();
           },
+          onDoubleTap: () => !favoriteIcon ? addFavorite(business.id) : null,
           child: AnimatedContainer(
             margin: EdgeInsets.all(8),
             padding: EdgeInsets.all(13),

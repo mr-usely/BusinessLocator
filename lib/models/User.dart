@@ -1,7 +1,13 @@
 class User {
-  String? id, firstName, lastName, email, birthDay;
+  String? id, firstName, lastName, email, birthDay, address;
 
-  User({this.id, this.firstName, this.lastName, this.birthDay, this.email});
+  User(
+      {this.id,
+      this.firstName,
+      this.lastName,
+      this.birthDay,
+      this.email,
+      this.address});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(

@@ -1,55 +1,28 @@
-{
-    "destination_addresses": [
-        "WQPF+2CR, Rizal Avenue, Cauayan City, Isabela, Philippines"
-    ],
-    "origin_addresses": [
-        "2Q5X+C34, Reina Mercedes, Isabela, Philippines"
-    ],
-    "rows": [
-        {
-            "elements": [
-                {
-                    "distance": {
-                        "text": "6.4 mi",
-                        "value": 10324
-                    },
-                    "duration": {
-                        "text": "20 mins",
-                        "value": 1181
-                    },
-                    "status": "OK"
-                }
+{address_components: [
+        {long_name: 18, short_name: 18, types: [street_number
+            ]
+        },
+        {long_name: Dacanay, short_name: Dacanay, types: [route
+            ]
+        },
+        {long_name: Cauayan City, short_name: Cauayan City, types: [locality, political
+            ]
+        },
+        {long_name: Isabela, short_name: Isabela, types: [administrative_area_level_2, political
+            ]
+        },
+        {long_name: Cagayan Valley, short_name: Cagayan Valley, types: [administrative_area_level_1, political
+            ]
+        },
+        {long_name: Philippines, short_name: PH, types: [country, political
             ]
         }
-    ],
-    "status": "OK"
-},
-
-{
-[
-    {
-        "_id": "637baf2cc707e2dd691d64c0",
-        "name": "KAWAYAN FOOD PRODUCTS, address: SAN FERMIN, CAUAYAN CITY, ISABELA",
-        "location": {
-            "type": "Point",
-            "coordinates": [
-                121.7939292292389,
-                16.995876445453302
-            ],
-            "_id": "637baf2cc707e2dd691d64c1"
-        },
-        "barangay": "San Fermin",
-        "classification": "Small",
-        "createdAt": "2022-11-21T17:02:36.631Z",
-        "updatedAt": "2022-11-21T17:02:36.631Z",
-        "__v": 0,
-        "distance": "1615.8348802257142",
-        "dist": {
-            "location": {
-                "type": "Point",
-                "coordinates": [121.7939292292389, 16.995876445453302],
-                "_id": "637baf2cc707e2dd691d64c1"
+    ], formatted_address: 18 Dacanay, Cauayan City, Isabela, Philippines, geometry: {location: {lat: 16.93609, lng: 121.7641511
+        }, location_type: ROOFTOP, viewport: {northeast: {lat: 16.9374389802915, lng: 121.7655000802915
+            }, southwest: {lat: 16.9347410197085, lng: 121.7628021197085
             }
         }
-    }
-]}
+    }, place_id: ChIJ3UY2mgBRhTMR_fNqcup-7Y4, plus_code: {compound_code: WQP7+CM Cauayan City, Isabela, Philippines, global_code: 7Q83WQP7+CM
+    }, types: [establishment, point_of_interest, university
+    ]
+}

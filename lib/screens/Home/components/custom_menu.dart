@@ -61,7 +61,7 @@ class Menu extends StatelessWidget {
                     top: 75,
                     child: Container(
                       height: 170,
-                      width: size.width,
+                      width: size.width * 0.88,
                       child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: itemList.length,

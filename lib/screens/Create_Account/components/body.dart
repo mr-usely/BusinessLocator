@@ -15,7 +15,9 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  bool isLoading = false;
   void submit(firstName, lastName, birthDay, email, password) async {
+    isLoading = true;
     if (firstName.isNotEmpty &&
         lastName.isNotEmpty &&
         birthDay.isNotEmpty &&
@@ -25,6 +27,7 @@ class _BodyState extends State<Body> {
           firstName, lastName, birthDay, email, password);
 
       if (request == "existing") {
+        isLoading = false;
         Fun.openDialog(context, CupertinoIcons.exclamationmark_circle_fill,
             "Account Already Exist", Colors.red.shade500);
       } else {
@@ -33,6 +36,8 @@ class _BodyState extends State<Body> {
         birthDay = "";
         email = "";
         password = "";
+
+        isLoading = false;
 
         Fun.loggedUser = User(
             id: request.id,
@@ -45,6 +50,7 @@ class _BodyState extends State<Body> {
             MaterialPageRoute(builder: ((context) => const HomeScreen())));
       }
     } else {
+      isLoading = false;
       Fun.openDialog(context, CupertinoIcons.check_mark,
           "Kindly fill all input fields", primaryColor);
     }
@@ -60,18 +66,30 @@ class _BodyState extends State<Body> {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      child: CustomCard(
-          height: 0.45,
-          content: Column(children: [
-            const Text('Create Account',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
-            const SizedBox(
-              height: 20,
-            ),
-            FormWidget(
-                onSubmit: (firstName, lastName, birthDay, email, password) =>
-                    submit(firstName, lastName, birthDay, email, password))
-          ])),
+      child: isLoading
+          ? Center(
+              child: Container(
+                  margin: EdgeInsets.all(13),
+                  padding: EdgeInsets.all(13),
+                  decoration: BoxDecoration(
+                      color: Color(0xFFE8E9EB),
+                      borderRadius: BorderRadius.circular(15)),
+                  child: CircularProgressIndicator(color: primaryColor)),
+            )
+          : CustomCard(
+              height: 0.47,
+              content: Column(children: [
+                const Text('Create Account',
+                    style:
+                        TextStyle(fontSize: 22, fontWeight: FontWeight.w700)),
+                const SizedBox(
+                  height: 20,
+                ),
+                FormWidget(
+                    onSubmit: (firstName, lastName, birthDay, email,
+                            password) =>
+                        submit(firstName, lastName, birthDay, email, password))
+              ])),
     );
   }
 }
