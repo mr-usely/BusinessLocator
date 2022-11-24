@@ -552,25 +552,27 @@ class _BodyState extends State<Body> {
                                                 return ListBusinesses(
                                                     favoriteIcon:
                                                         showFavoriteIcon,
-                                                    onDelFavorite: (id) =>
-                                                        isOnDeleteFavorite(id),
+                                                    onDelFavorite: (id) => setState(() =>
+                                                        isOnDeleteFavorite(id)),
                                                     business:
                                                         itemBusinesses[index],
-                                                    addFavorite: (id) =>
-                                                        isOnAddFavorite(id),
+                                                    addFavorite: (id) => setState(() =>
+                                                        isOnAddFavorite(id)),
                                                     onPressed:
                                                         (id, name, lat, lng) {
-                                                      onTapBusiness(
-                                                          id, name, lat, lng);
-                                                      showSearchCard = false;
+                                                      setState(() {
+                                                        onTapBusiness(
+                                                            id, name, lat, lng);
+                                                        showSearchCard = false;
+                                                      });
                                                     },
-                                                    onSlideRight: () =>
-                                                        itemBusinesses[index]
-                                                            .isOnDelete = true,
-                                                    onSlideLeft: () =>
-                                                        itemBusinesses[index]
+                                                    onSlideRight: () => setState(
+                                                        () => itemBusinesses[index]
+                                                            .isOnDelete = true),
+                                                    onSlideLeft: () => setState(
+                                                        () => itemBusinesses[index]
                                                                 .isOnDelete =
-                                                            false);
+                                                            false));
                                               }),
                                         ),
                                       ),
