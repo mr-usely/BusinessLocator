@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mao/models/Businesses.dart';
 import 'package:google_mao/models/User.dart';
@@ -89,7 +90,7 @@ class Fun {
             classification: d["classification"]));
       }
     } catch (_ClientSocketException) {
-      print("error");
+      if (kDebugMode) print("error");
     }
   }
 
@@ -106,7 +107,7 @@ class Fun {
         barangayList.add(d["_id"]);
       }
     } catch (_ClientSocketException) {
-      print("error");
+      if (kDebugMode) print("error");
     }
   }
 
@@ -128,7 +129,7 @@ class Fun {
             classification: d["classification"]));
       }
     } catch (_ClientSocketException) {
-      print("error");
+      if (kDebugMode) print("error");
     }
   }
 
@@ -151,7 +152,7 @@ class Fun {
             classification: d["classification"]));
       }
     } catch (_ClientSocketException) {
-      print("error");
+      if (kDebugMode) print("error");
     }
   }
 

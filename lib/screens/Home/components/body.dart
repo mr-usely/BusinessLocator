@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_mao/function/function.dart';
@@ -45,7 +46,7 @@ class _BodyState extends State<Body> {
   bool isMenuOpened = false;
   bool isProfileMenuOpened = false;
   bool showFavoriteIcon = false;
-  bool showSearchCard = true;
+  bool showSearchCard = false;
   bool isSearchLoad = false;
   Timer? timer;
   List<Businesses> itemBusinesses = Fun.itemListBusinesses;
@@ -85,7 +86,7 @@ class _BodyState extends State<Body> {
         });
       });
     } catch (e) {
-      print(e);
+      if (kDebugMode) print(e);
     }
   }
 
@@ -109,11 +110,11 @@ class _BodyState extends State<Body> {
           isLoadPolyline = true;
         });
       } else {
-        print('no polylines');
+        if (kDebugMode) print('no polylines');
         isLoadPolyline = true;
       }
     } catch (e) {
-      print(e);
+      if (kDebugMode) print(e);
     }
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mao/function/function.dart';
 import 'package:google_mao/utils/constants.dart';
@@ -22,11 +23,12 @@ class _BodyState extends State<Body> {
         setState(() {
           address = value.toString();
           Fun.loggedUser!.address = value.toString();
+
+          var result = Fun.updateAddress(Fun.loggedUser!.id, address);
+
+          if (kDebugMode) print(result);
         });
       });
-
-      var result = Fun.updateAddress(Fun.loggedUser!.id, address);
-      print(result);
     });
   }
 
