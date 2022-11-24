@@ -34,7 +34,7 @@ class CustomAppBar extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(15)),
-                child: const Text('Business Locator')),
+                child: const Text('MSMEs Business Locator')),
             Container(
                 decoration: BoxDecoration(
                     color: Colors.white,

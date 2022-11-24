@@ -13,13 +13,15 @@ class ListBusinesses extends StatelessWidget {
       required this.favoriteIcon,
       required this.onSlideRight,
       required this.onSlideLeft,
-      required this.addFavorite});
+      required this.addFavorite,
+      required this.onDelFavorite});
   final Function onPressed;
   final Businesses business;
   final bool favoriteIcon;
   final Function onSlideRight;
   final Function onSlideLeft;
   final Function addFavorite;
+  final Function onDelFavorite;
   static bool showIcon = false;
   @override
   Widget build(BuildContext context) {
@@ -63,18 +65,21 @@ class ListBusinesses extends StatelessWidget {
         ),
         favoriteIcon
             ? Positioned(
-                top: 20,
-                right: 15,
+                top: 9,
+                right: 9,
                 child: business.isOnDelete
                     ? Container(
-                        padding: EdgeInsets.all(5),
                         decoration: BoxDecoration(
                             color: primaryColor,
-                            borderRadius: BorderRadius.circular(15)),
-                        child: Icon(
-                          CupertinoIcons.trash,
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(15),
+                                bottomRight: Radius.circular(15))),
+                        child: IconButton(
+                          onPressed: () => onDelFavorite(business.id),
+                          icon: Icon(CupertinoIcons.trash),
+                          iconSize: 20,
                           color: Colors.white,
-                          size: 17,
+                          padding: const EdgeInsets.all(10),
                         ))
                     : SizedBox())
             : SizedBox()

@@ -176,6 +176,15 @@ class Fun {
     }
   }
 
+  // delete favorites
+  static deleteFavorite(businessId) async {
+    http.Response res =
+        await http.delete(Uri.parse("$server/favorite/delete/$businessId"));
+    var data = json.decode(res.body);
+
+    return data["type"];
+  }
+
   // search Item
   static isSearchItem(item) async {
     http.Response res =

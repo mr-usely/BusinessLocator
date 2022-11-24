@@ -111,7 +111,8 @@ class _BodyState extends State<Body> {
         });
       } else {
         if (kDebugMode) print('no polylines');
-        isLoadPolyline = true;
+
+        setState(() => isLoadPolyline = true);
       }
     } catch (e) {
       if (kDebugMode) print(e);
@@ -188,12 +189,31 @@ class _BodyState extends State<Body> {
     }
   }
 
+  void isOnDeleteFavorite(businessId) async {
+    var res = await Fun.deleteFavorite(businessId);
+
+    if (res == "success") {
+      setState(() {
+        Fun.loadAllFavorites(Fun.loggedUser!.id);
+        itemBusinesses = Fun.itemFavorites;
+      });
+      Fun.openDialog(context, CupertinoIcons.check_mark_circled,
+          "Favorite deleted", Colors.green);
+    } else {
+      Fun.openDialog(
+          context,
+          CupertinoIcons.check_mark,
+          "The service may not be available please try again later.",
+          primaryColor);
+    }
+  }
+
   void isSetSelected(id) {
     for (var item in Fun.businessList) {
       if (item.id == id) {
-        item.isSelected = true;
+        setState(() => item.isSelected = true);
       } else {
-        item.isSelected = false;
+        setState(() => item.isSelected = false);
       }
     }
   }
@@ -201,9 +221,9 @@ class _BodyState extends State<Body> {
   void isOnDelete(id) {
     for (var item in itemList) {
       if (item.id == id) {
-        item.isOnDelete = true;
+        setState(() => item.isOnDelete = true);
       } else {
-        item.isSelected = false;
+        setState(() => item.isOnDelete = false);
       }
     }
   }
@@ -220,17 +240,19 @@ class _BodyState extends State<Body> {
   }
 
   void isOpenMenu() {
-    isMenuOpened = !isMenuOpened;
+    setState(() => isMenuOpened = !isMenuOpened);
   }
 
   void isMenu(menu) {
     if (menu == "Barangays") {
-      isCardBody = true;
-      isDockMenu = true;
-      isMenuOpened = false;
-      showFavoriteIcon = false;
-      showSearchCard = false;
-      cardBodyTitle = "Barangays";
+      setState(() {
+        isCardBody = true;
+        isDockMenu = true;
+        isMenuOpened = false;
+        showFavoriteIcon = false;
+        showSearchCard = false;
+        cardBodyTitle = "Barangays";
+      });
     } else if (menu == "Favorites") {
       cardBodyTitle = "Favorites";
       Fun.loadAllFavorites(Fun.loggedUser!.id);
@@ -243,16 +265,18 @@ class _BodyState extends State<Body> {
         showSearchCard = false;
       });
     } else if (menu == "Search") {
-      isCardBody = false;
-      showSearchCard = true;
-      isDockMenu = true;
-      isMenuOpened = false;
-      showFavoriteIcon = false;
+      setState(() {
+        isCardBody = false;
+        showSearchCard = true;
+        isDockMenu = true;
+        isMenuOpened = false;
+        showFavoriteIcon = false;
+      });
     }
   }
 
   void isOpenProfileMenu() {
-    isProfileMenuOpened = !isProfileMenuOpened;
+    setState(() => isProfileMenuOpened = !isProfileMenuOpened);
   }
 
   void profileMenu(menu) {
@@ -438,6 +462,9 @@ class _BodyState extends State<Body> {
                                                     return ListBusinesses(
                                                         favoriteIcon:
                                                             showFavoriteIcon,
+                                                        onDelFavorite: (id) =>
+                                                            isOnDeleteFavorite(
+                                                                id),
                                                         business:
                                                             itemBusinesses[
                                                                 index],
@@ -525,6 +552,8 @@ class _BodyState extends State<Body> {
                                                 return ListBusinesses(
                                                     favoriteIcon:
                                                         showFavoriteIcon,
+                                                    onDelFavorite: (id) =>
+                                                        isOnDeleteFavorite(id),
                                                     business:
                                                         itemBusinesses[index],
                                                     addFavorite: (id) =>
@@ -577,10 +606,10 @@ class _BodyState extends State<Body> {
                           bottom: isDockMenu ? 10 : 30,
                           child: Menu(
                             dockMenu: isDockMenu,
-                            onDockMenu: () {
+                            onDockMenu: () => setState(() {
                               isDockMenu = !isDockMenu;
                               isCardBody = false;
-                            },
+                            }),
                             itemList: Fun.businessList,
                             onPressed: (id, name, lat, lng) =>
                                 onTapBusiness(id, name, lat, lng),
