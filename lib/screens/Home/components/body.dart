@@ -579,7 +579,8 @@ class _BodyState extends State<Body> {
                                       Positioned(
                                           bottom: 20,
                                           child: GestureDetector(
-                                            onTap: () => showSearchCard = false,
+                                            onTap: () => setState(
+                                                () => showSearchCard = false),
                                             child: Container(
                                               width: size.width,
                                               child: Padding(
@@ -613,8 +614,8 @@ class _BodyState extends State<Body> {
                               isCardBody = false;
                             }),
                             itemList: Fun.businessList,
-                            onPressed: (id, name, lat, lng) =>
-                                onTapBusiness(id, name, lat, lng),
+                            onPressed: (id, name, lat, lng) => setState(
+                                () => onTapBusiness(id, name, lat, lng)),
                           )),
                     ]))
         ],
